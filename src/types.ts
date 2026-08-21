@@ -3,6 +3,7 @@ export interface SendDockOptions {
   apiKey: string
   projectId: string
   maxRetries?: number
+  timeoutMs?: number
   fetch?: typeof globalThis.fetch
 }
 

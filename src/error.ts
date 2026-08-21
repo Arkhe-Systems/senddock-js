@@ -17,6 +17,10 @@ export class SendDockError extends Error {
     return this.status === 429
   }
 
+  get isNetworkError(): boolean {
+    return this.status === 0
+  }
+
   get isNotFound(): boolean {
     return this.status === 404
   }

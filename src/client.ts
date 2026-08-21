@@ -20,6 +20,7 @@ export class SendDock {
   private readonly apiKey: string
   private readonly projectId: string
   private readonly maxRetries: number
+  private readonly timeoutMs: number
   private readonly fetchImpl: typeof globalThis.fetch
 
   constructor(options: SendDockOptions) {
@@ -30,6 +31,7 @@ export class SendDock {
     this.apiKey = options.apiKey
     this.projectId = options.projectId
     this.maxRetries = options.maxRetries ?? 2
+    this.timeoutMs = options.timeoutMs ?? 30_000
     this.fetchImpl = options.fetch ?? globalThis.fetch
   }
 
@@ -72,10 +74,31 @@ export class SendDock {
 
     let lastError: SendDockError | undefined
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
-      const response = await this.fetchImpl(url, { method, headers, body: payload })
+      let response: Response
+      try {
+        response = await this.fetchImpl(url, {
+          method,
+          headers,
+          body: payload,
+          signal: AbortSignal.timeout(this.timeoutMs),
+        })
+      } catch (cause) {
+        lastError = networkError(cause, this.timeoutMs)
+        if (attempt === this.maxRetries) throw lastError
+        await sleep(500 * 2 ** attempt)
+        continue
+      }
 
       if (response.ok) {
-        return (await response.json()) as T
+        try {
+          return (await response.json()) as T
+        } catch (cause) {
+          throw new SendDockError(
+            response.status,
+            'the server returned a non-JSON response body',
+            cause,
+          )
+        }
       }
 
       const error = await this.toError(response)
@@ -102,6 +125,14 @@ export class SendDock {
     }
     return new SendDockError(response.status, message, body)
   }
+}
+
+function networkError(cause: unknown, timeoutMs: number): SendDockError {
+  if (cause instanceof DOMException && cause.name === 'TimeoutError') {
+    return new SendDockError(0, `request timed out after ${timeoutMs}ms`, cause)
+  }
+  const detail = cause instanceof Error ? cause.message : String(cause)
+  return new SendDockError(0, `network error: ${detail}`, cause)
 }
 
 function retryDelayMs(response: Response, attempt: number): number {
