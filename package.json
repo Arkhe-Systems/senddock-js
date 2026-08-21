@@ -1,0 +1,55 @@
+{
+  "name": "@senddock/sdk",
+  "version": "0.1.0",
+  "description": "Official TypeScript SDK for the SendDock API — self-hosted email marketing, isolated by project.",
+  "keywords": [
+    "senddock",
+    "email",
+    "email-marketing",
+    "transactional",
+    "newsletter",
+    "self-hosted",
+    "smtp"
+  ],
+  "license": "MIT",
+  "author": "Arkhe Systems",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arkhe-Systems/senddock-js.git"
+  },
+  "homepage": "https://docs.senddock.dev/api/authentication",
+  "bugs": "https://github.com/Arkhe-Systems/senddock-js/issues",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
