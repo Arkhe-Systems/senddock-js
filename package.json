@@ -1,7 +1,7 @@
 {
   "name": "@senddock/sdk",
-  "version": "0.1.0",
-  "description": "Official TypeScript SDK for the SendDock API — self-hosted email marketing, isolated by project.",
+  "version": "0.2.0",
+  "description": "Official TypeScript SDK for the SendDock API \u2014 self-hosted email marketing, isolated by project.",
   "keywords": [
     "senddock",
     "email",
