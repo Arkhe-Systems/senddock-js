@@ -69,9 +69,11 @@ All active subscribers, or a saved segment:
 await senddock.broadcast({ template_id: 'tpl-id' })
 
 await senddock.broadcast({ template_id: 'tpl-id', segment_id: 'seg-id' })
+
+await senddock.broadcast({ template_id: 'tpl-id', newsletter_id: 'nl-id' })
 ```
 
-Broadcasts require the instance to have a public URL configured (recipients need a working unsubscribe link).
+Broadcasts require the instance to have a public URL configured (recipients need a working unsubscribe link). A newsletter broadcast targets that publication's active members and gives each recipient a per-newsletter unsubscribe link — leaving the rest of the list and their project status untouched. `segment_id` and `newsletter_id` are mutually exclusive.
 
 ### Import subscribers
 

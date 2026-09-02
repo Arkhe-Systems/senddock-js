@@ -71,6 +71,16 @@ describe('SendDock client', () => {
     expect(JSON.parse(init.body)).toEqual({ template_id: 't-1', segment_id: 'seg-1' })
   })
 
+  it('sends a newsletter broadcast and honours the per-newsletter unsubscribe', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(200, { sent: 12, broadcast_id: 'b-9' }))
+    const sd = makeClient(fetchMock)
+
+    await sd.broadcast({ template_id: 't-1', newsletter_id: 'nl-3' })
+
+    const [, init] = fetchMock.mock.calls[0]!
+    expect(JSON.parse(init.body)).toEqual({ template_id: 't-1', newsletter_id: 'nl-3' })
+  })
+
   it('imports subscribers as a bare array with validation flags', async () => {
     const fetchMock = vi.fn().mockResolvedValue(
       jsonResponse(200, {

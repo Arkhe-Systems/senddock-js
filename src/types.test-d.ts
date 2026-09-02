@@ -27,6 +27,8 @@ describe('compile-time contract', () => {
     void sd.sendBatch({ template_id: 't', recipients: [{ data: {} }] })
     // @ts-expect-error template_id is required
     void sd.broadcast({ segment_id: 's' })
+    // newsletter targeting is part of the runtime surface
+    void sd.broadcast({ template_id: 't', newsletter_id: 'nl-1' })
   })
 
   it('rejects invalid import rows at compile time', () => {

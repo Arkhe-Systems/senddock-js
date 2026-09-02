@@ -58,13 +58,16 @@ export interface BroadcastRequest {
   subject?: string
   variables?: Record<string, string>
   html_fields?: string[]
+  /** Target a saved segment. Mutually exclusive with `newsletter_id`. */
   segment_id?: string
+  /** Target a newsletter — recipients get a per-newsletter unsubscribe link. Mutually exclusive with `segment_id`. */
+  newsletter_id?: string
 }
 
 export interface BroadcastResponse {
   sent: number
-  failed: number
-  suppressed?: number
+  /** The broadcast id, so you can poll `GET /broadcasts` for the final sent/failed/suppressed tallies. */
+  broadcast_id?: string
 }
 
 export type SubscriberStatus = 'active' | 'pending' | 'unsubscribed'
@@ -116,6 +119,7 @@ export type WebhookEventType =
   | 'email.clicked'
   | 'subscriber.created'
   | 'subscriber.unsubscribed'
+  | 'subscriber.newsletter_unsubscribed'
 
 export interface WebhookEvent<T = Record<string, unknown>> {
   id: string
